@@ -28,12 +28,4 @@ import Breadcrumb from "./components/Default/Breadcrumb.vue";
   flex-direction: column;
   gap: 1rem;
 }
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active em versões anteriores ao Vue 2.1.8 */ {
-  opacity: 0;
-}
 </style>
