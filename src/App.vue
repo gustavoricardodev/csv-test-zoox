@@ -1,25 +1,39 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
-import Breadcrumb from "./components/Breadcrumb.vue";
+import Breadcrumb from "./components/Default/Breadcrumb.vue";
 </script>
 
 <template>
-  <header>
-    <Breadcrumb />
-  </header>
+  <div class="app">
+    <header>
+      <Breadcrumb />
+    </header>
 
-  <main>
-    <hr />
+    <RouterView class="router-view" />
 
-    <nav>
+    <div>
       <RouterLink to="/">Home</RouterLink> -
       <RouterLink to="/detail/1">detail</RouterLink>
-    </nav>
-
-    <hr />
-
-    <RouterView />
-  </main>
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<style>
+.app {
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active em versões anteriores ao Vue 2.1.8 */ {
+  opacity: 0;
+}
+</style>

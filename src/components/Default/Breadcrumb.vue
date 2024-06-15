@@ -58,14 +58,14 @@ watchEffect(() => {
 }
 
 .breadcrumb__item + .breadcrumb__item::before {
-  content: url(../assets/breadcrumb-arrow.svg);
+  content: url(../assets/img/breadcrumb-arrow.svg);
   margin: 0 0.9375rem;
 }
 
 .breadcrumb__item a,
 .breadcrumb__item span {
   font-family: Roboto;
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 400;
   color: var(--dark-blue-color);
   text-decoration: none;
