@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import Breadcrumb from "./components/Default/Breadcrumb.vue";
+import { RouterLink, RouterView } from 'vue-router';
+import Breadcrumb from './components/Default/Breadcrumb.vue';
 </script>
 
 <template>
@@ -13,7 +13,7 @@ import Breadcrumb from "./components/Default/Breadcrumb.vue";
 
     <div>
       <RouterLink to="/">Home</RouterLink> -
-      <RouterLink to="/detail/1">detail</RouterLink>
+      <RouterLink to="/detail/1">Detail</RouterLink>
     </div>
   </div>
 </template>

@@ -1,17 +1,31 @@
 <script setup lang="ts">
-import CommonButton from "../components/Common/CommonButton.vue";
+import { ref } from 'vue';
 
-const handleButtonClick = () => {
-  console.log("Button clicado");
+
+import CommonButton from "../components/Common/CommonButton.vue";
+import UploadModal from "../components/HomeView/UploadModal.vue";
+
+const uploadModal = ref(false)
+
+const openUploadModal = () => {
+  uploadModal.value = true;
+  console.log('open')
 };
+
+const closeUploadModal = () => {
+  uploadModal.value = false;
+  console.log('close')
+}
 </script>
 
 <template>
   <main class="home">
 
+    <UploadModal :uploadModalState="uploadModal" @changeUploadModalState="closeUploadModal"/>
+
     <div class="home__top">
       <p class="home__top-title">Seus Arquivos</p>
-      <CommonButton theme="white" button-title="Importar CSV" @button-click="handleButtonClick">
+      <CommonButton theme="white" button-title="Importar CSV" @button-click="openUploadModal">
         <template #image>
           <img src="../assets/img/plus-icon.svg" width="7" height="7" alt="Ícone de adicionar" title="Ícone de adicionar" />
         </template>
