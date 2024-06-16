@@ -54,26 +54,16 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.2s;
 }
 
 .modal__content {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
+  padding: 1rem;
+  border-radius: 15px;
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  animation: slideUp 0.2s;
 }
 
 @keyframes slideUp {

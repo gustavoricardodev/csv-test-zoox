@@ -2,7 +2,12 @@
   <nav aria-label="breadcrumb">
     <ul class="breadcrumb">
       <li class="breadcrumb__item">
-        <router-link :class="{ active: isOnHomePage }" to="/">Início</router-link>
+        <router-link
+          :title="homePageTitle"
+          :class="{ active: isOnHomePage }"
+          to="/"
+          >Início</router-link
+        >
       </li>
 
       <template v-if="!isOnHomePage">
@@ -11,10 +16,14 @@
           :key="breadcrumbItem.path + index"
           class="breadcrumb__item"
         >
-          <router-link :to="breadcrumbItem.path" v-if="!breadcrumbItem.active">
+          <router-link
+            :title="`Navegar para {{ breadcrumbItem.name }}`"
+            :to="breadcrumbItem.path"
+            v-if="!breadcrumbItem.active"
+          >
             {{ breadcrumbItem.name }}
           </router-link>
-          <span class="active" v-else>
+          <span class="active" v-else title="Você já está nesta página">
             {{ breadcrumbItem.name }}
           </span>
         </li>
@@ -24,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watchEffect, watch } from "vue";
 import { useRoute } from "vue-router";
 
 interface Breadcrumb {
@@ -37,6 +46,12 @@ const route = useRoute();
 const breadcrumb = ref<Breadcrumb[]>([]);
 
 const isOnHomePage = computed(() => route.path === "/");
+const homePageTitle = ref('Você já está nessa página')
+
+watch(
+  isOnHomePage, (newValue) => {
+    homePageTitle.value = newValue ? "Você já está nessa página" : "Navegar para o início"
+})
 
 watchEffect(() => {
   breadcrumb.value = route.matched.map((breadcrumb, index) => {

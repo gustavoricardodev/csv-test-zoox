@@ -1,34 +1,70 @@
 <script setup lang="ts">
-import Modal from '../Common/CommonModal.vue';
+import Modal from "../Common/CommonModal.vue";
+import CancelButton from "./CancelButton.vue";
+import SelectFileButton from "./SelectFileButton.vue";
 
 const props = defineProps<{
-  uploadModalState: boolean;
+  modelValue: boolean;
 }>();
 
-const emit = defineEmits(["changeUploadModalState"]);
+const emit = defineEmits(["update:modelValue"]);
 
-const changeUploadModalState = () => {
-  emit("changeUploadModalState");
-}
-
+const handleCancelClick = () => {
+  emit("update:modelValue")
+};
+const handleSelectFileClick = () => {};
 </script>
 
 <template>
-  <div>
-    <Modal v-model="props.uploadModalState" @modelValue="changeUploadModalState">
-      <p>modalzinho dos cria</p>
-    </Modal>
-  </div>
+  <Modal
+    :modelValue="props.modelValue"
+    @update:modelValue="emit('update:modelValue', $event)"
+  >
+    <div class="uploadModal">
+      <p class="uploadModal__title">escolha um arquivo a ser importado</p>
+
+      <form class="uploadModal__select-file">
+        <p>Arraste um arquivo CSV, XLSX até aqui</p>
+        <p>Ou se preferir</p>
+
+        <SelectFileButton @selectFileClick="handleSelectFileClick" />
+
+        <input type="file" />
+      </form>
+
+      <CancelButton class="uploadModal__cancel--button" @cancelClick="handleCancelClick" />
+    </div>
+  </Modal>
 </template>
 
-<style>
-.app {
-  width: 100vw;
-  height: 100vh;
-  padding: 1rem;
-  margin: 0;
+<style scoped>
+.uploadModal {
   display: flex;
   flex-direction: column;
+  gap: 0.625rem;
+}
+
+.uploadModal__title {
+  color: var(--black-color);
+  font-family: Roboto;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  line-height: 1.2;
+  text-transform: capitalize;
+}
+
+.uploadModal__select-file {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 1rem;
+  border-radius: 16px;
+  border: 1px dashed var(--medium-gray-color);
+  padding: 36px;
+}
+
+.uploadModal__cancel--button {
+  align-self: flex-end;
 }
 </style>

@@ -1,54 +1,46 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 
-
-import CommonButton from "../components/Common/CommonButton.vue";
+import ImportButton from "../components/HomeView/ImportButton.vue";
 import UploadModal from "../components/HomeView/UploadModal.vue";
 
-const uploadModal = ref(false)
-
+const uploadModal = ref(false);
 const openUploadModal = () => {
   uploadModal.value = true;
-  console.log('open')
 };
-
-const closeUploadModal = () => {
-  uploadModal.value = false;
-  console.log('close')
-}
 </script>
 
 <template>
   <main class="home">
-
-    <UploadModal :uploadModalState="uploadModal" @changeUploadModalState="closeUploadModal"/>
+    <transition name="fade">
+      <UploadModal v-model="uploadModal" />
+    </transition>
 
     <div class="home__top">
       <p class="home__top-title">Seus Arquivos</p>
-      <CommonButton theme="white" button-title="Importar CSV" @button-click="openUploadModal">
-        <template #image>
-          <img src="../assets/img/plus-icon.svg" width="7" height="7" alt="Ícone de adicionar" title="Ícone de adicionar" />
-        </template>
-        Importar CSV
-      </CommonButton>
+      <ImportButton @importButtonClick="openUploadModal" />
     </div>
 
     <div class="home__listing">
       <div class="home__listing-empty">
         <div class="home__listing-empty-wrapper">
-          <img src="../assets/img/table.svg" width="96" height="75" alt="Imagem de uma tabela" title="Imagem de uma tabela">
+          <img
+            src="../assets/img/table.svg"
+            width="96"
+            height="75"
+            alt="Imagem de uma tabela"
+            title="Imagem de uma tabela"
+          />
           <p><strong>Sem tabelas importadas</strong></p>
           <p>Importe clicando no botão acima “importar csv” para começar</p>
         </div>
       </div>
-
     </div>
   </main>
 </template>
 
 <style scoped>
 .home {
-  background: url();
   width: 100%;
   flex-grow: 1;
   display: flex;
@@ -100,5 +92,15 @@ const closeUploadModal = () => {
 .home__listing-empty p {
   font-size: 13px;
   color: var(--black-color);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

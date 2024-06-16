@@ -1,53 +1,58 @@
 <template>
-  <button class="commonButton" :class="buttonClass" @click="handleClick" :title="buttonTitle">
+  <button
+    class="commonButton"
+    @click="handleClick"
+    :title="buttonTitle"
+    :style="buttonStyle"
+  >
     <slot name="image"></slot>
     <slot></slot>
   </button>
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, computed } from 'vue';
+import { defineProps, defineEmits, computed } from "vue";
 
 const props = defineProps<{
-  theme: 'dark' | 'white';
+  buttonBorderColor: string;
+  borderWeight: string;
+  buttonColor: string;
+  buttonBold: boolean;
+  buttonBackground: string;
   buttonTitle: string;
 }>();
 
 const emit = defineEmits<{
-  (e: 'button-click'): void;
+  (e: "buttonClick"): void;
 }>();
 
-const buttonClass = computed(() => {
-  return props.theme === 'dark' ? 'commonButton__dark' : 'commonButton__white';
+const buttonStyle = computed(() => {
+  return {
+    borderColor: props.buttonColor,
+    color: props.buttonColor,
+    fontWeight: props.buttonBold ? "700" : "400",
+    border: `${props.borderWeight} solid ${props.buttonBorderColor}`,
+    background: props.buttonBackground
+  };
 });
 
 const handleClick = () => {
-  emit('button-click');
+  emit("buttonClick");
 };
 </script>
 
 <style scoped>
 .commonButton {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.1875rem 0.5rem;
-  border: 1px solid var(--dark-gray-color);
-  border-radius: 15px;
   cursor: pointer;
   font-family: Roboto;
+  padding: 0.1875rem 0.5rem;
   font-size: 0.8125rem;
-  font-weight: 400;
-  transition: opacity .2s;
+  border-radius: 15px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0);
+  transition: all 0.2s;
 }
 
-.commonButton__dark {
-  background-color: var(--dark-gray-color);
-  color: var(--white-color);
-}
-
-.commonButton__white {
-  background-color: var(--white-color);
-  color: var(--dark-gray-color);
+.commonButton:hover {
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.15);
 }
 </style>
