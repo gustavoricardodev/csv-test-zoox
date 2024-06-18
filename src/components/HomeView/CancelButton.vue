@@ -1,14 +1,14 @@
 <template>
     <CommonButton
       buttonBackground="#fff"
-      buttonBorderColor="#333"
-      borderWeight="1px"
-      buttonColor="#333"
-      :buttonBold="false"
-      buttonTitle="Cancelar"
+      buttonBorderColor="#202123"
+      borderWeight="2px"
+      buttonColor="#202123"
+      :buttonBold="true"
+      buttonTitle="CANCELAR"
       @buttonClick="$emit('cancelClick')"
     >
-      Cancelar
+      CANCELAR
     </CommonButton>
   </template>
   

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Modal from "../Common/CommonModal.vue";
 import CancelButton from "./CancelButton.vue";
-import SelectFileButton from "./SelectFileButton.vue";
+import UploadArea from "./UploadArea.vue";
 
 const props = defineProps<{
   modelValue: boolean;
@@ -23,14 +23,7 @@ const handleSelectFileClick = () => {};
     <div class="uploadModal">
       <p class="uploadModal__title">escolha um arquivo a ser importado</p>
 
-      <form class="uploadModal__select-file">
-        <p>Arraste um arquivo CSV, XLSX até aqui</p>
-        <p>Ou se preferir</p>
-
-        <SelectFileButton @selectFileClick="handleSelectFileClick" />
-
-        <input type="file" />
-      </form>
+      <UploadArea />
 
       <CancelButton class="uploadModal__cancel--button" @cancelClick="handleCancelClick" />
     </div>

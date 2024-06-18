@@ -1,9 +1,9 @@
 <template>
   <CommonButton
     buttonBackground="#fff"
-    buttonBorderColor="#333"
+    buttonBorderColor="#202123"
     borderWeight="1px"
-    buttonColor="#333"
+    buttonColor="#202123"
     :buttonBold="false"
     buttonTitle="Importar CSV"
     @buttonClick="$emit('importButtonClick')"
