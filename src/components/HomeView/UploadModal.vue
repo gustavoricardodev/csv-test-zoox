@@ -23,7 +23,7 @@ const handleSelectFileClick = () => {};
     <div class="uploadModal">
       <p class="uploadModal__title">escolha um arquivo a ser importado</p>
 
-      <UploadArea />
+      <UploadArea @closePopLindinha="emit('update:modelValue', false)"/>
 
       <CancelButton class="uploadModal__cancel--button" @cancelClick="handleCancelClick" />
     </div>

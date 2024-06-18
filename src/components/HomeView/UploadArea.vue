@@ -1,3 +1,57 @@
+
+<template>
+  <Transition name="fade" mode="out-in">
+    <div
+      class="dropArea"
+      ref="dropArea"
+      @dragover.prevent="onDragOver"
+      @drop.prevent="onDrop"
+      @click="triggerFileSelection"
+      v-if="isConverting === 'none'"
+    >
+      <p>Arraste um arquivo CSV, XLSX até aqui</p>
+      <p>Ou se preferir</p>
+
+      <SelectFileButton @selectFileClick="triggerFileSelection" />
+
+      <input
+        ref="fileInput"
+        type="file"
+        accept=".csv"
+        @change="onFileInputChange"
+        style="display: none"
+      />
+    </div>
+
+    <div class="uploadArea" v-else-if="isConverting === 'converting'">
+
+          <p>
+            <img
+              src="../../assets/img/csv-icon.svg"
+              :alt="fileName"
+              width="18"
+              height="18"
+            />
+            {{ fileName }}
+          </p>
+          <SelectAnotherFileButton
+            @selectAnotherFileClick="removeLastFileAdded"
+          />
+
+
+      <div class="uploadArea__progress-bar">
+        <div
+          class="uploadArea__progress-bar-fill"
+          :style="{ width: progress + '%' }"
+        ></div>
+      </div>
+      <p>
+        Envio do Arquivo: <strong>{{ progress }}%</strong>
+      </p>
+    </div>
+  </Transition>
+</template>
+
 <script setup lang="ts">
 import { ref, watch } from "vue";
 import Papa from "papaparse";
@@ -15,7 +69,11 @@ interface CsvFile {
 const myFiles = ref<CsvFile[]>([]);
 const progress = ref(0);
 const fileInput = ref<HTMLInputElement | null>(null);
-const isConverting = ref(false);
+const dropArea = ref<HTMLDivElement | null>(null);
+const isConverting = ref<stateConverting>("none");
+const fileName = ref('')
+
+type stateConverting = "none" | "converting" | "finally";
 
 watch(
   myFiles,
@@ -25,11 +83,28 @@ watch(
   { deep: true }
 );
 
+watch(isConverting, (newState) => {
+  if (newState === "finally") {
+    emit('closePopLindinha')
+  };
+});
+
+const emit = defineEmits<{
+  (e: 'closePopLindinha'): void
+}>()
+
 const triggerFileSelection = (): void => {
   fileInput.value?.click();
 };
 
+const removeLastFileAdded = (): void => {
+  if (myFiles.value.length) {
+    myFiles.value.pop();
+  }
+};
+
 const onDragOver = (event: DragEvent): void => {
+  console.log("event", event.dataTransfer?.items[0].type);
   event.preventDefault();
 };
 
@@ -51,13 +126,15 @@ const onFileInputChange = (event: Event): void => {
 const handleFileUpload = (file: File): void => {
   const reader = new FileReader();
 
+  fileName.value = file.name
+
   reader.onload = () => {
     const csv = reader.result as string;
     parseCsv(csv, file.name);
   };
 
   reader.onerror = () => {
-    console.error("Error reading file");
+    console.error("coiso coiso coiso");
   };
 
   reader.readAsText(file);
@@ -67,27 +144,23 @@ const parseCsv = (csvContent: string, fileName: string): void => {
   const parsedRows: Record<string, unknown>[] = [];
   let rowCount = 0;
 
-  isConverting.value = true;
+  isConverting.value = "converting";
   progress.value = 0;
 
   Papa.parse(csvContent, {
-    header: true,
     skipEmptyLines: true,
     step: (row) => {
       parsedRows.push(row.data);
       rowCount++;
-      progress.value = Math.min(
-        100,
-        Math.round((rowCount / csvContent.split("\n").length) * 100)
-      );
     },
     complete: () => {
-      if (parsedRows.length > 0) {
+      if (parsedRows.length) {
         const numberOfRows = parsedRows.length;
         const numberOfColumns = Object.keys(parsedRows[0]).length;
         const createdAt = new Date().toISOString();
 
         const fileData: CsvFile = {
+          //melhorar essa data do carai
           data: parsedRows,
           numberOfRows,
           numberOfColumns,
@@ -95,80 +168,35 @@ const parseCsv = (csvContent: string, fileName: string): void => {
           name: fileName,
         };
 
-        myFiles.value.push(fileData);
-        progress.value = 100;
+        console.log(fileData);
+
+        // aiaiani simula carregamento progressivo
+        let simulatedProgress = 0;
+        const interval = setInterval(() => {
+          simulatedProgress += 2;
+          progress.value = Math.min(simulatedProgress, 100);
+
+          if (simulatedProgress >= 100) {
+            myFiles.value.push(fileData);
+            clearInterval(interval);
+            isConverting.value = "finally";
+          }
+        }, 50);
       } else {
+        // ainainain colocar mensagem de erro
         console.error("No data found in CSV");
+        isConverting.value = "none";
       }
-      isConverting.value = false;
     },
     error: (error) => {
+      // ainainain colocar mensagem de erro
       console.error("Error parsing CSV:", error);
-      isConverting.value = false;
+      isConverting.value = "none";
     },
   });
 };
 </script>
 
-<template>
-  <div>
-    <Transition name="fade" mode="out-in">
-      <div
-        class="dropArea"
-        @dragover.prevent="onDragOver"
-        @drop.prevent="onDrop"
-        @click="triggerFileSelection"
-        v-if="myFiles.length === 0"
-      >
-        <p>Arraste um arquivo CSV, XLSX até aqui</p>
-        <p>Ou se preferir</p>
-
-        <SelectFileButton @selectFileClick="triggerFileSelection" />
-
-        <input
-          ref="fileInput"
-          type="file"
-          accept=".csv"
-          @change="onFileInputChange"
-          style="display: none"
-        />
-      </div>
-
-      <div class="uploadArea" v-else>
-        <ul class="uploadArea__uploaded-files">
-          <li
-            class="uploadArea__uploaded-file"
-            v-for="file in myFiles"
-            :key="file.name"
-          >
-            <p>
-              <img
-                src="../../assets/img/csv-icon.svg"
-                :alt="file.name"
-                width="18"
-                height="18"
-              />
-              {{ file.name }}
-            </p>
-            <SelectAnotherFileButton
-              @selectAnotherFileClick="triggerFileSelection"
-            />
-          </li>
-        </ul>
-
-        <div class="uploadArea__progress-bar">
-          <div
-            class="uploadArea__progress-bar-fill"
-            :style="{ width: progress + '%' }"
-          ></div>
-        </div>
-        <p>
-          Envio do Arquivo: <strong>{{ progress }}%</strong>
-        </p>
-      </div>
-    </Transition>
-  </div>
-</template>
 
 <style scoped>
 .dropArea {
@@ -219,7 +247,7 @@ const parseCsv = (csvContent: string, fileName: string): void => {
 .uploadArea__progress-bar-fill {
   height: 4px;
   background-color: var(--dark-blue-color);
-  transition: width 5s ease;
+  transition: width ease;
 }
 
 .fade-enter-active,
