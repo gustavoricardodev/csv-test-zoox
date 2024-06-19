@@ -60,7 +60,6 @@ import Papa from "papaparse";
 import SelectFileButton from "./SelectFileButton.vue";
 import SelectAnotherFileButton from "./SelectAnotherFileButton.vue";
 
-// Interface para um arquivo CSV
 interface CsvFile {
   data: Record<string, unknown>[];
   rowCount: number;
@@ -69,7 +68,6 @@ interface CsvFile {
   name: string;
 }
 
-// Referências e estados
 const files = ref<CsvFile[]>([]);
 const uploadProgress = ref(0);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -78,12 +76,10 @@ const conversionStatus = ref<"initial" | "converting" | "completed">("initial");
 const fileTypeState = ref<"unknown" | "valid" | "invalid">("unknown");
 const fileName = ref("");
 
-// Emissão de eventos
 const emit = defineEmits<{
   (e: "closeUploader"): void;
 }>();
 
-// Observadores
 watch(
   files,
   (newFiles) => {
@@ -94,12 +90,11 @@ watch(
 
 watch(conversionStatus, (newStatus) => {
   if (newStatus === "completed") {
-    console.log('era pra ter emitido')
+    console.log("era pra ter emitido");
     emit("closeUploader");
   }
 });
 
-// Funções de manipulação de arquivos
 const triggerFileSelection = (): void => {
   fileInput.value?.click();
 };
@@ -128,7 +123,7 @@ const handleDrop = (event: DragEvent): void => {
 };
 
 const handleDragLeave = () => {
-  resetValidation(); // Redefine o estado de validação após o leave
+  resetValidation();
 };
 
 const handleFileInputChange = (event: Event): void => {
@@ -141,7 +136,6 @@ const handleFileInputChange = (event: Event): void => {
   }
 };
 
-// Verifica se o arquivo é do tipo CSV ou XLSX
 const fileTypeStateFunc = (
   item: File | DataTransferItem
 ): "valid" | "invalid" => {
@@ -153,14 +147,12 @@ const fileTypeStateFunc = (
   return validTypes.includes(type) ? "valid" : "invalid";
 };
 
-// Função para resetar o estado de validação
 const resetValidation = (): void => {
   conversionStatus.value = "initial";
   fileTypeState.value = "unknown";
   fileName.value = "";
 };
 
-// Função para fazer upload de arquivo
 const uploadFile = (file: File): void => {
   const reader = new FileReader();
 
@@ -178,7 +170,6 @@ const uploadFile = (file: File): void => {
   reader.readAsText(file);
 };
 
-// Função para parsear conteúdo CSV
 const parseCsv = (csvContent: string): void => {
   const parsedRows: Record<string, unknown>[] = [];
   let rowCount = 0;
@@ -188,7 +179,7 @@ const parseCsv = (csvContent: string): void => {
 
   Papa.parse(csvContent, {
     skipEmptyLines: true,
-    step: (row) => {
+    step: (row: any) => {
       parsedRows.push(row.data);
       rowCount++;
     },
@@ -220,7 +211,7 @@ const parseCsv = (csvContent: string): void => {
 
 const resetUpload = (): void => {
   conversionStatus.value = "initial";
-  fileTypeState.value = "unknown"
+  fileTypeState.value = "unknown";
   fileName.value = "";
   uploadProgress.value = 0;
 };
@@ -236,9 +227,9 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
       files.value.push(csvFile);
       conversionStatus.value = "completed";
       clearInterval(interval);
-      fileTypeState.value = "unknown"
+      fileTypeState.value = "unknown";
     } else if (fileTypeState.value === "invalid") {
-      console.log(fileTypeState.value)
+      console.log(fileTypeState.value);
       clearInterval(interval);
       resetUpload();
     }

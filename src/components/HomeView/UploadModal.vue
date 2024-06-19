@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Modal from "../Common/CommonModal.vue";
 import CancelButton from "./CancelButton.vue";
-import UploadArea from "./UploadArea.vue";
+import UploadArea from "./DragAndDropUploader.vue";
 
 const props = defineProps<{
   modelValue: boolean;
