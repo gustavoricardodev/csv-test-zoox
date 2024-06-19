@@ -12,7 +12,6 @@ const emit = defineEmits(["update:modelValue"]);
 const handleCancelClick = () => {
   emit("update:modelValue")
 };
-const handleSelectFileClick = () => {};
 </script>
 
 <template>

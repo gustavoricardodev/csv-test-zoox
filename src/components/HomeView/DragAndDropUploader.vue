@@ -57,6 +57,7 @@
 <script setup lang="ts">
 import { ref, watch, defineEmits } from "vue";
 import Papa from "papaparse";
+import Moment from 'moment';
 import SelectFileButton from "./SelectFileButton.vue";
 import SelectAnotherFileButton from "./SelectAnotherFileButton.vue";
 
@@ -83,14 +84,21 @@ const emit = defineEmits<{
 watch(
   files,
   (newFiles) => {
-    localStorage.setItem("uploadedFiles", JSON.stringify(newFiles));
+    const uploadedFiles = localStorage.getItem('uploadedFiles');
+    let storedFiles: CsvFile[] = [];
+
+    if (uploadedFiles) {
+      storedFiles = JSON.parse(uploadedFiles);
+    }
+
+    storedFiles.push(...newFiles);
+    localStorage.setItem('uploadedFiles', JSON.stringify(storedFiles));
   },
   { deep: true }
 );
 
 watch(conversionStatus, (newStatus) => {
   if (newStatus === "completed") {
-    console.log("era pra ter emitido");
     emit("closeUploader");
   }
 });
@@ -186,7 +194,7 @@ const parseCsv = (csvContent: string): void => {
     complete: () => {
       if (parsedRows.length) {
         const numberOfColumns = Object.keys(parsedRows[0]).length;
-        const createdAt = new Date().toISOString();
+        const createdAt = Moment().format('DD/MM/YYYY');
 
         const csvFile: CsvFile = {
           data: parsedRows,
@@ -229,7 +237,6 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
       clearInterval(interval);
       fileTypeState.value = "unknown";
     } else if (fileTypeState.value === "invalid") {
-      console.log(fileTypeState.value);
       clearInterval(interval);
       resetUpload();
     }
