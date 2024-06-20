@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
 import Breadcrumb from "./components/Default/Breadcrumb.vue";
-import { useRoute } from 'vue-router'
+import { useRoute } from "vue-router";
 
 const route = useRoute();
-
 </script>
 
 <template>
@@ -14,7 +13,10 @@ const route = useRoute();
     </header>
 
     <router-view v-slot="{ Component }">
-      <transition :name="route.meta.transition as string || 'fade'" mode="out-in">
+      <transition
+        :name="(route.meta.transition as string) || 'fade'"
+        mode="out-in"
+      >
         <component :is="Component" />
       </transition>
     </router-view>
@@ -25,7 +27,8 @@ const route = useRoute();
 .app {
   width: 100vw;
   height: 100vh;
-  max-height: 100vh;
+  /* max-height: 100vh; */
+  overflow: hidden;
   padding: 1rem;
   margin: 0;
   display: flex;

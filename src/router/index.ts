@@ -1,26 +1,26 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from "vue-router";
 
-import HomeView from '../views/HomeView.vue';
-import DetailView from '../views/DetailView.vue';
+import HomeView from "../views/HomeView.vue";
+import DetailView from "../views/DetailView.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'home',
+    path: "/",
+    name: "home",
     component: HomeView,
-    meta: { breadcrumbLabel: 'Início', transition: 'slide-right'  }
+    meta: { breadcrumbLabel: "Início", transition: "slide-right" },
   },
   {
-    path: '/detail/:slug',
-    name: 'detail',
+    path: "/detail/:id",
+    name: "detail",
     component: DetailView,
-    meta: { breadcrumbLabel: 'Detalhe do CSV', transition: 'slide-left'  }
-  }
+    meta: { breadcrumbLabel: "Detalhe do CSV", transition: "slide-left" },
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
+  routes,
 });
 
 export default router;

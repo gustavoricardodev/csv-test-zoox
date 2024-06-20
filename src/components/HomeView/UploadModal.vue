@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Modal from "../Common/CommonModal.vue";
-import CancelButton from "./CancelButton.vue";
+import CancelButton from "../Common/CommonCancelButton.vue";
 import UploadArea from "./DragAndDropUploader.vue";
 
 const props = defineProps<{
@@ -10,7 +10,7 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 
 const handleCancelClick = () => {
-  emit("update:modelValue", false)
+  emit("update:modelValue", false);
 };
 </script>
 
@@ -22,9 +22,12 @@ const handleCancelClick = () => {
     <div class="uploadModal">
       <p class="uploadModal__title">escolha um arquivo a ser importado</p>
 
-      <UploadArea @closeUploader="emit('update:modelValue', false)"/>
+      <UploadArea @closeUploader="emit('update:modelValue', false)" />
 
-      <CancelButton class="uploadModal__cancel--button" @cancelClick="handleCancelClick" />
+      <CancelButton
+        class="uploadModal__cancel--button"
+        @cancelClick="handleCancelClick"
+      />
     </div>
   </Modal>
 </template>

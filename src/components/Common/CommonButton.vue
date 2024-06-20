@@ -1,15 +1,3 @@
-<template>
-  <button
-    class="commonButton"
-    @click="handleClick"
-    :title="buttonTitle"
-    :style="buttonStyle"
-  >
-    <slot name="image"></slot>
-    <slot></slot>
-  </button>
-</template>
-
 <script setup lang="ts">
 import { computed } from "vue";
 
@@ -32,7 +20,7 @@ const buttonStyle = computed(() => {
     color: props.buttonColor,
     fontWeight: props.buttonBold ? "700" : "400",
     border: `${props.borderWeight} solid ${props.buttonBorderColor}`,
-    background: props.buttonBackground
+    background: props.buttonBackground,
   };
 });
 
@@ -40,6 +28,18 @@ const handleClick = () => {
   emit("buttonClick");
 };
 </script>
+
+<template>
+  <button
+    class="commonButton"
+    @click="handleClick"
+    :title="buttonTitle"
+    :style="buttonStyle"
+  >
+    <slot name="image"></slot>
+    <slot></slot>
+  </button>
+</template>
 
 <style scoped>
 .commonButton {
@@ -50,6 +50,9 @@ const handleClick = () => {
   border-radius: 15px;
   box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0);
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .commonButton:hover {

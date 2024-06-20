@@ -2,7 +2,7 @@
 import CommonButton from "../Common/CommonButton.vue";
 
 const emit = defineEmits<{
-  (e: "importButtonClick"): void;
+  (e: "backButtonClick"): void;
 }>();
 </script>
 
@@ -13,18 +13,18 @@ const emit = defineEmits<{
     borderWeight="1px"
     buttonColor="#202123"
     :buttonBold="false"
-    buttonTitle="Importar CSV"
-    @buttonClick="$emit('importButtonClick')"
+    buttonTitle="Voltar"
+    @buttonClick="$emit('backButtonClick')"
   >
     <template #image>
       <img
-        src="../../assets/img/plus-icon.svg"
-        width="7"
-        height="7"
-        alt="Ícone de adicionar"
-        title="Ícone de adicionar"
+        src="../../assets/img/back-icon.svg"
+        width="12"
+        height="12"
+        alt="Ícone de voltar"
+        title="Ícone de voltar"
       />
     </template>
-    Importar CSV
+    Voltar
   </CommonButton>
 </template>

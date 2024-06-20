@@ -2,7 +2,7 @@
 import CommonButton from "../Common/CommonButton.vue";
 
 const emit = defineEmits<{
-  (e: "selectAnotherFileClick"): void;
+  (e: "cancelClick"): void;
 }>();
 </script>
 
@@ -13,9 +13,10 @@ const emit = defineEmits<{
     borderWeight="2px"
     buttonColor="#202123"
     :buttonBold="true"
-    buttonTitle="SELECIONE OUTRO ARQUIVO"
-    @buttonClick="$emit('selectAnotherFileClick')"
+    buttonTitle="CANCELAR"
+    @buttonClick="$emit('cancelClick')"
   >
-    SELECIONE OUTRO ARQUIVO
+    CANCELAR
   </CommonButton>
 </template>
+F

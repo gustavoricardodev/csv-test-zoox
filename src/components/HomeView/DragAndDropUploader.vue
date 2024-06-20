@@ -13,13 +13,13 @@
       @dragleave.prevent="handleDragLeave"
       @click="triggerFileSelection"
     >
-      <p>Arraste um arquivo CSV ou XLSX até aqui</p>
+      <p>Arraste um arquivo CSV até aqui</p>
       <p>Ou se preferir</p>
       <SelectFileButton @selectFileClick="triggerFileSelection" />
       <input
         ref="fileInput"
         type="file"
-        accept=".csv, .xlsx"
+        accept=".csv"
         @change="handleFileInputChange"
         style="display: none"
       />
@@ -56,18 +56,18 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 
 import Papa from "papaparse";
-import { v4 as uuidv4 } from 'uuid';
-import Moment from 'moment';
+import { v4 as uuidv4 } from "uuid";
+import Moment from "moment";
 
 import SelectFileButton from "./SelectFileButton.vue";
 import SelectAnotherFileButton from "./SelectAnotherFileButton.vue";
 
 import { type CsvFile } from "@/types/csv-file";
 
-const router = useRouter()
+const router = useRouter();
 const files = ref<CsvFile[]>([]);
 const uploadProgress = ref(0);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -83,7 +83,7 @@ const emit = defineEmits<{
 watch(
   files,
   (newFiles) => {
-    const uploadedFiles = localStorage.getItem('uploadedFiles');
+    const uploadedFiles = localStorage.getItem("uploadedFiles");
     let storedFiles: CsvFile[] = [];
 
     if (uploadedFiles) {
@@ -91,7 +91,7 @@ watch(
     }
 
     storedFiles.push(...newFiles);
-    localStorage.setItem('uploadedFiles', JSON.stringify(storedFiles));
+    localStorage.setItem("uploadedFiles", JSON.stringify(storedFiles));
   },
   { deep: true }
 );
@@ -146,10 +146,8 @@ const handleFileInputChange = (event: Event): void => {
 const fileTypeStateFunc = (
   item: File | DataTransferItem
 ): "valid" | "invalid" => {
-  const validTypes = [
-    "text/csv",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  ];
+  const validTypes = ["text/csv"];
+
   const type = item instanceof DataTransferItem ? item.type : item.type;
   return validTypes.includes(type) ? "valid" : "invalid";
 };
@@ -193,7 +191,7 @@ const parseCsv = (csvContent: string): void => {
     complete: () => {
       if (parsedRows.length) {
         const numberOfColumns = Object.keys(parsedRows[0]).length;
-        const createdAt = Moment().format('DD/MM/YYYY');
+        const createdAt = Moment().format("DD/MM/YYYY");
 
         const csvFile: CsvFile = {
           id: uuidv4(),
@@ -202,6 +200,9 @@ const parseCsv = (csvContent: string): void => {
           columnCount: numberOfColumns,
           createdAt,
           name: fileName.value,
+          exported: false,
+          exportedRows: 0,
+          exportedColumns: 0,
         };
 
         simulateUploadProgress(csvFile);
@@ -237,7 +238,7 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
       conversionStatus.value = "completed";
       clearInterval(interval);
       fileTypeState.value = "unknown";
-      router.push(`detail/${csvFile.id}`)
+      router.push(`detail/${csvFile.id}`);
     } else if (fileTypeState.value === "invalid") {
       clearInterval(interval);
       resetUpload();
@@ -287,6 +288,7 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
   justify-content: space-between;
   align-items: center;
 }
+
 .file-drop-uploader__file-info {
   display: flex;
   align-items: center;

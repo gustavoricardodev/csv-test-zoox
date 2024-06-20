@@ -1,11 +1,3 @@
-<template>
-  <div v-if="isVisible" class="modal" @click="closeModal">
-    <div class="modal__content" @click.stop>
-      <slot></slot>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 
@@ -41,6 +33,14 @@ onBeforeUnmount(() => {
   document.removeEventListener("keydown", keyHandler);
 });
 </script>
+
+<template>
+  <div v-if="isVisible" class="modal" @click="closeModal">
+    <div class="modal__content" @click.stop>
+      <slot></slot>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .modal {

@@ -1,50 +1,5 @@
-<template>
-  <div class="home__listing-fullfilled">
-    <ul class="home__listing-fullfilled-header">
-      <li>Nome</li>
-      <li>Número De Colunas</li>
-      <li>Número de Linhas</li>
-      <li>Exportado</li>
-      <li>Criado Em</li>
-      <li>Download</li>
-      <li>Excluir</li>
-    </ul>
-    <ul
-      v-for="(file, index) in files"
-      :key="file.name ?? index"
-      class="home__listing-fullfilled-item"
-      @click="goToDetail(file.id)"
-    >
-      <li>{{ file.name }}</li>
-      <li>{{ file.columnCount }} colunas</li>
-      <li>{{ file.rowCount }} linhas</li>
-      <li>Exportado</li>
-      <li>{{ file.createdAt }}</li>
-      <li>
-        <button @click.stop="downloadFile(file)" :title="'Baixar ' + file.name">
-          <img
-            src="../../assets/img/download-icon.svg"
-            :alt="'Baixar ' + file.name"
-            width="16"
-            height="16"
-          />
-        </button>
-      </li>
-      <li>
-        <button @click.stop="deleteFile(file.id)" :title="'Excluir ' + file.name">
-          <img
-            src="../../assets/img/trash-icon.svg"
-            :alt="'Excluir ' + file.name"
-            width="16"
-            height="16"
-          />
-        </button>
-      </li>
-    </ul>
-  </div>
-</template>
-
 <script setup lang="ts">
+import { computed } from "vue";
 import { type CsvFile } from "@/types/csv-file";
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -66,7 +21,62 @@ const deleteFile = (fileId: string) => {
 const goToDetail = (fileId: string) => {
   router.push(`detail/${fileId}`);
 };
+
+const exportedFile = (file: CsvFile) => {
+  return file.exported
+    ? `Sim - ${file.exportedRows} linhas e ${file.exportedColumns} colunas`
+    : "Não";
+};
 </script>
+
+<template>
+  <div class="home__listing-fullfilled">
+    <ul class="home__listing-fullfilled-header">
+      <li>Nome</li>
+      <li>Número De Colunas</li>
+      <li>Número de Linhas</li>
+      <li>Exportado</li>
+      <li>Criado Em</li>
+      <li>Download</li>
+      <li>Excluir</li>
+    </ul>
+    <ul
+      v-for="(file, index) in files"
+      :key="file.name ?? index"
+      class="home__listing-fullfilled-item"
+      @click="goToDetail(file.id)"
+    >
+      <li>{{ file.name }}</li>
+      <li>{{ file.columnCount }} colunas</li>
+      <li>{{ file.rowCount }} linhas</li>
+      <li>{{ exportedFile(file) }}</li>
+      <li>{{ file.createdAt }}</li>
+      <li>
+        <button @click.stop="downloadFile(file)" :title="'Baixar ' + file.name">
+          <img
+            src="../../assets/img/download-icon.svg"
+            :alt="'Baixar ' + file.name"
+            width="16"
+            height="16"
+          />
+        </button>
+      </li>
+      <li>
+        <button
+          @click.stop="deleteFile(file.id)"
+          :title="'Excluir ' + file.name"
+        >
+          <img
+            src="../../assets/img/trash-icon.svg"
+            :alt="'Excluir ' + file.name"
+            width="16"
+            height="16"
+          />
+        </button>
+      </li>
+    </ul>
+  </div>
+</template>
 
 <style scoped>
 .home__listing-fullfilled ul {

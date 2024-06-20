@@ -5,4 +5,7 @@ export type CsvFile = {
   columnCount: number;
   createdAt: string;
   name: string;
-}
+  exported: boolean;
+  exportedRows: number;
+  exportedColumns: number;
+};

@@ -4,7 +4,7 @@ import ImportButton from "../components/HomeView/ImportButton.vue";
 import UploadModal from "../components/HomeView/UploadModal.vue";
 import ListingEmpty from "../components/HomeView/ListingEmpty.vue";
 import ListingFullfilled from "../components/HomeView/ListingFullfilled.vue";
-import ConfirmDeleteModal from '../components/HomeView/ConfirmDeleteModal.vue'
+import ConfirmDeleteModal from "../components/HomeView/ConfirmDeleteModal.vue";
 import { type CsvFile } from "@/types/csv-file";
 
 const parsedUploadedFiles = ref<CsvFile[]>([]);
@@ -16,13 +16,14 @@ const isLoading = ref(true);
 
 const loadUploadedFiles = () => {
   const uploadedFiles = localStorage.getItem("uploadedFiles");
-  if (uploadedFiles) {
-    parsedUploadedFiles.value = JSON.parse(uploadedFiles);
-  }
+
   // fake loading
   setTimeout(() => {
-    isLoading.value = false; 
-  }, 1000)
+    if (uploadedFiles) {
+      parsedUploadedFiles.value = JSON.parse(uploadedFiles);
+    }
+    isLoading.value = false;
+  }, 1000);
 };
 
 onMounted(() => {
@@ -30,10 +31,11 @@ onMounted(() => {
 });
 
 const saveUploadedFiles = () => {
-  localStorage.setItem("uploadedFiles", JSON.stringify(parsedUploadedFiles.value));
+  localStorage.setItem(
+    "uploadedFiles",
+    JSON.stringify(parsedUploadedFiles.value)
+  );
 };
-
-onMounted(loadUploadedFiles);
 
 watch(parsedUploadedFiles, saveUploadedFiles, { deep: true });
 
@@ -48,13 +50,15 @@ const openConfirmDeleteModal = (fileId: string) => {
 
 const deleteFile = () => {
   parsedUploadedFiles.value = parsedUploadedFiles.value.filter(
-    file => file.id !== fileToDelete.value
+    (file) => file.id !== fileToDelete.value
   );
   confirmDeleteModalVisible.value = false;
 };
 
 const downloadFile = (file: CsvFile) => {
-  const csvContent = file.data.map(row => Object.values(row).join(",")).join("\n");
+  const csvContent = file.data
+    .map((row) => Object.values(row).join(","))
+    .join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
@@ -105,7 +109,6 @@ const downloadFile = (file: CsvFile) => {
   </main>
 </template>
 
-
 <style scoped>
 .home {
   width: 100%;
@@ -113,7 +116,7 @@ const downloadFile = (file: CsvFile) => {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  height: 100%;
+  overflow: hidden;
 }
 
 .home__top {
@@ -139,24 +142,22 @@ const downloadFile = (file: CsvFile) => {
 }
 
 .home__listing::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-    padding-bottom: 20px;
-
+  width: 10px;
+  height: 10px;
+  padding-bottom: 20px;
 }
- 
-.home__listing::-webkit-scrollbar-track {
-    margin: 40px;
-    box-shadow: inset 5px 5px 10px var(--white-color);
-    border-radius: 16px;
 
+.home__listing::-webkit-scrollbar-track {
+  margin: 40px;
+  box-shadow: inset 5px 5px 10px var(--white-color);
+  border-radius: 16px;
 }
 
 .home__listing::-webkit-scrollbar-thumb {
-    border-right: 5px solid var(--white-color);
-    border-bottom: 5px solid var(--white-color);
-    background-clip: padding-box;
-    background: var(--medium-gray-color); 
+  border-right: 5px solid var(--white-color);
+  border-bottom: 5px solid var(--white-color);
+  background-clip: padding-box;
+  background: var(--medium-gray-color);
 }
 
 .listing__loader {
@@ -178,7 +179,7 @@ const downloadFile = (file: CsvFile) => {
   border-top: 3px solid var(--dark-blue-color);
   border-right: 3px solid transparent;
   box-sizing: border-box;
-  animation: rotation .8s linear infinite;
+  animation: rotation 0.8s linear infinite;
 }
 
 @keyframes rotation {
@@ -188,11 +189,11 @@ const downloadFile = (file: CsvFile) => {
   100% {
     transform: rotate(360deg);
   }
-} 
+}
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity .2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .fade-enter-from,

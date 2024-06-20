@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { ref, computed, watchEffect, watch } from "vue";
+import { useRoute } from "vue-router";
+
+interface Breadcrumb {
+  name: string;
+  path: string;
+  active: boolean;
+}
+
+const route = useRoute();
+const breadcrumb = ref<Breadcrumb[]>([]);
+
+const isOnHomePage = computed(() => route.path === "/");
+const homePageTitle = ref("Você já está nessa página");
+
+watch(isOnHomePage, (newValue) => {
+  homePageTitle.value = newValue
+    ? "Você já está nessa página"
+    : "Navegar para o início";
+});
+
+watchEffect(() => {
+  breadcrumb.value = route.matched.map((breadcrumb, index) => {
+    return {
+      name: breadcrumb.meta.breadcrumbLabel as string,
+      path: breadcrumb.path,
+      active: index === route.matched.length - 1,
+    };
+  });
+});
+</script>
+
 <template>
   <nav aria-label="breadcrumb">
     <ul class="breadcrumb">
@@ -31,38 +64,6 @@
     </ul>
   </nav>
 </template>
-
-<script setup lang="ts">
-import { ref, computed, watchEffect, watch } from "vue";
-import { useRoute } from "vue-router";
-
-interface Breadcrumb {
-  name: string;
-  path: string;
-  active: boolean;
-}
-
-const route = useRoute();
-const breadcrumb = ref<Breadcrumb[]>([]);
-
-const isOnHomePage = computed(() => route.path === "/");
-const homePageTitle = ref('Você já está nessa página')
-
-watch(
-  isOnHomePage, (newValue) => {
-    homePageTitle.value = newValue ? "Você já está nessa página" : "Navegar para o início"
-})
-
-watchEffect(() => {
-  breadcrumb.value = route.matched.map((breadcrumb, index) => {
-    return {
-      name: breadcrumb.meta.breadcrumbLabel as string,
-      path: breadcrumb.path,
-      active: index === route.matched.length - 1,
-    };
-  });
-});
-</script>
 
 <style scoped>
 .breadcrumb {
