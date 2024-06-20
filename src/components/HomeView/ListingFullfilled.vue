@@ -45,7 +45,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from "vue";
 import { type CsvFile } from "@/types/csv-file";
 import { useRouter } from "vue-router";
 const router = useRouter();

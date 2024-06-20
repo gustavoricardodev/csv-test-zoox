@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineEmits } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from 'vue-router'
 
 import Papa from "papaparse";
@@ -224,7 +224,7 @@ const resetUpload = (): void => {
   uploadProgress.value = 0;
 };
 
-// faking parse
+// fake loading upload
 const simulateUploadProgress = (csvFile: CsvFile): void => {
   let simulatedProgress = 0;
 
