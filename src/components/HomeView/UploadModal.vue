@@ -10,7 +10,7 @@ const props = defineProps<{
 const emit = defineEmits(["update:modelValue"]);
 
 const handleCancelClick = () => {
-  emit("update:modelValue")
+  emit("update:modelValue", false)
 };
 </script>
 

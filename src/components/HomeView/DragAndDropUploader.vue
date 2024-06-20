@@ -57,17 +57,11 @@
 <script setup lang="ts">
 import { ref, watch, defineEmits } from "vue";
 import Papa from "papaparse";
+import { v4 as uuidv4 } from 'uuid';
 import Moment from 'moment';
 import SelectFileButton from "./SelectFileButton.vue";
 import SelectAnotherFileButton from "./SelectAnotherFileButton.vue";
-
-interface CsvFile {
-  data: Record<string, unknown>[];
-  rowCount: number;
-  columnCount: number;
-  createdAt: string;
-  name: string;
-}
+import { type CsvFile } from "@/types/csv-file";
 
 const files = ref<CsvFile[]>([]);
 const uploadProgress = ref(0);
@@ -197,6 +191,7 @@ const parseCsv = (csvContent: string): void => {
         const createdAt = Moment().format('DD/MM/YYYY');
 
         const csvFile: CsvFile = {
+          id: uuidv4(),
           data: parsedRows,
           rowCount,
           columnCount: numberOfColumns,
@@ -257,6 +252,10 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
   gap: 16px;
   border-radius: 16px;
   transition: all 0.2s;
+}
+
+.file-drop-uploader:hover {
+  background: var(--background);
 }
 
 .file-drop-uploader.valid {
