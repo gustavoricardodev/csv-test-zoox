@@ -8,13 +8,13 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-    meta: { breadcrumbLabel: 'Início' }
+    meta: { breadcrumbLabel: 'Início', transition: 'slide-right'  }
   },
   {
     path: '/detail/:slug',
     name: 'detail',
     component: DetailView,
-    meta: { breadcrumbLabel: 'Detalhe do CSV' }
+    meta: { breadcrumbLabel: 'Detalhe do CSV', transition: 'slide-left'  }
   }
 ];
 

@@ -224,6 +224,7 @@ const resetUpload = (): void => {
   uploadProgress.value = 0;
 };
 
+// faking parse
 const simulateUploadProgress = (csvFile: CsvFile): void => {
   let simulatedProgress = 0;
 
@@ -302,7 +303,7 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
 .file-drop-uploader__progress-bar-fill {
   height: 4px;
   background-color: var(--dark-blue-color);
-  transition: width 0.3s ease;
+  transition: width 0.2s ease;
 }
 
 .fade-enter-active,

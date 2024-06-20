@@ -13,7 +13,7 @@
       v-for="(file, index) in files"
       :key="file.name ?? index"
       class="home__listing-fullfilled-item"
-      @click.self="goToDetail(file.id)"
+      @click="goToDetail(file.id)"
     >
       <li>{{ file.name }}</li>
       <li>{{ file.columnCount }} colunas</li>
@@ -21,7 +21,7 @@
       <li>Exportado</li>
       <li>{{ file.createdAt }}</li>
       <li>
-        <button @click="downloadFile(file)" :title="'Baixar ' + file.name">
+        <button @click.stop="downloadFile(file)" :title="'Baixar ' + file.name">
           <img
             src="../../assets/img/download-icon.svg"
             :alt="'Baixar ' + file.name"
@@ -31,7 +31,7 @@
         </button>
       </li>
       <li>
-        <button @click="deleteFile(file.id)" :title="'Excluir ' + file.name">
+        <button @click.stop="deleteFile(file.id)" :title="'Excluir ' + file.name">
           <img
             src="../../assets/img/trash-icon.svg"
             :alt="'Excluir ' + file.name"

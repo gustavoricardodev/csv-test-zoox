@@ -12,12 +12,22 @@ const uploadModalVisible = ref(false);
 const confirmDeleteModalVisible = ref(false);
 const fileToDelete = ref<string | null>(null);
 
+const isLoading = ref(true);
+
 const loadUploadedFiles = () => {
   const uploadedFiles = localStorage.getItem("uploadedFiles");
   if (uploadedFiles) {
     parsedUploadedFiles.value = JSON.parse(uploadedFiles);
   }
+  // fake loading
+  setTimeout(() => {
+    isLoading.value = false; 
+  }, 1000)
 };
+
+onMounted(() => {
+  loadUploadedFiles();
+});
 
 const saveUploadedFiles = () => {
   localStorage.setItem("uploadedFiles", JSON.stringify(parsedUploadedFiles.value));
@@ -75,13 +85,21 @@ const downloadFile = (file: CsvFile) => {
 
     <section class="home__listing">
       <Transition mode="out-in" name="fade">
-        <ListingFullfilled
-          v-if="parsedUploadedFiles.length"
-          :files="parsedUploadedFiles"
-          @downloadFile="downloadFile"
-          @deleteFile="openConfirmDeleteModal"
-        />
-        <ListingEmpty v-else />
+        <template v-if="isLoading">
+          <div class="listing__loader">
+            <span class="loader"></span>
+            fake loading...
+          </div>
+        </template>
+        <template v-else>
+          <ListingFullfilled
+            v-if="parsedUploadedFiles.length"
+            :files="parsedUploadedFiles"
+            @downloadFile="downloadFile"
+            @deleteFile="openConfirmDeleteModal"
+          />
+          <ListingEmpty v-else />
+        </template>
       </Transition>
     </section>
   </main>
@@ -141,9 +159,40 @@ const downloadFile = (file: CsvFile) => {
     background: var(--medium-gray-color); 
 }
 
+.listing__loader {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 100%;
+}
+
+.loader {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: inline-block;
+  border-top: 3px solid var(--dark-blue-color);
+  border-right: 3px solid transparent;
+  box-sizing: border-box;
+  animation: rotation .8s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity .2s ease;
 }
 
 .fade-enter-from,
