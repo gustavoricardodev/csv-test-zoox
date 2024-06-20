@@ -12,7 +12,6 @@ const uploadModalVisible = ref(false);
 const confirmDeleteModalVisible = ref(false);
 const fileToDelete = ref<string | null>(null);
 
-// Função para carregar arquivos do localStorage
 const loadUploadedFiles = () => {
   const uploadedFiles = localStorage.getItem("uploadedFiles");
   if (uploadedFiles) {
@@ -20,17 +19,14 @@ const loadUploadedFiles = () => {
   }
 };
 
-// Função para salvar arquivos no localStorage
 const saveUploadedFiles = () => {
   localStorage.setItem("uploadedFiles", JSON.stringify(parsedUploadedFiles.value));
 };
 
 onMounted(loadUploadedFiles);
 
-// Observador para atualizar localStorage quando os arquivos mudarem
 watch(parsedUploadedFiles, saveUploadedFiles, { deep: true });
 
-// Funções de abertura de modais
 const openUploadModal = () => {
   uploadModalVisible.value = true;
 };
@@ -40,7 +36,6 @@ const openConfirmDeleteModal = (fileId: string) => {
   fileToDelete.value = fileId;
 };
 
-// Função de exclusão de arquivo
 const deleteFile = () => {
   parsedUploadedFiles.value = parsedUploadedFiles.value.filter(
     file => file.id !== fileToDelete.value
@@ -48,7 +43,6 @@ const deleteFile = () => {
   confirmDeleteModalVisible.value = false;
 };
 
-// Função para download de arquivo
 const downloadFile = (file: CsvFile) => {
   const csvContent = file.data.map(row => Object.values(row).join(",")).join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -63,12 +57,10 @@ const downloadFile = (file: CsvFile) => {
 
 <template>
   <main class="home">
-    <!-- Modal de Upload -->
     <Transition name="fade">
       <UploadModal v-model="uploadModalVisible" />
     </Transition>
 
-    <!-- Modal de Confirmação de Exclusão -->
     <Transition name="fade">
       <ConfirmDeleteModal
         v-model="confirmDeleteModalVisible"
@@ -76,13 +68,11 @@ const downloadFile = (file: CsvFile) => {
       />
     </Transition>
 
-    <!-- Cabeçalho com botão de importação -->
     <div class="home__top">
       <h1 class="home__top-title">Seus Arquivos</h1>
       <ImportButton @importButtonClick="openUploadModal" />
     </div>
 
-    <!-- Listagem de arquivos -->
     <section class="home__listing">
       <Transition mode="out-in" name="fade">
         <ListingFullfilled
@@ -128,6 +118,27 @@ const downloadFile = (file: CsvFile) => {
   background-color: var(--white-color);
   flex: 1;
   overflow: auto;
+}
+
+.home__listing::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    padding-bottom: 20px;
+
+}
+ 
+.home__listing::-webkit-scrollbar-track {
+    margin: 40px;
+    box-shadow: inset 5px 5px 10px var(--white-color);
+    border-radius: 16px;
+
+}
+
+.home__listing::-webkit-scrollbar-thumb {
+    border-right: 5px solid var(--white-color);
+    border-bottom: 5px solid var(--white-color);
+    background-clip: padding-box;
+    background: var(--medium-gray-color); 
 }
 
 .fade-enter-active,

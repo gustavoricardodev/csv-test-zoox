@@ -3,16 +3,13 @@ import Modal from "../Common/CommonModal.vue";
 import CancelButton from "./CancelButton.vue";
 import ConfirmButton from "./ConfirmButton.vue";
 
-// Definindo propriedades e emissão de eventos
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits(["update:modelValue", "confirmDeleteFile"]);
 
-// Função para lidar com o cancelamento
 const handleCancelClick = () => {
   emit("update:modelValue", false);
 };
 
-// Função para lidar com a confirmação
 const handleConfirmClick = () => {
   emit("confirmDeleteFile");
   emit("update:modelValue", false);

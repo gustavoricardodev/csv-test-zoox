@@ -10,11 +10,6 @@ import Breadcrumb from './components/Default/Breadcrumb.vue';
     </header>
 
     <RouterView class="router-view" />
-
-    <div>
-      <RouterLink to="/">Home</RouterLink> -
-      <RouterLink to="/detail/1">Detail</RouterLink>
-    </div>
   </div>
 </template>
 
@@ -22,6 +17,7 @@ import Breadcrumb from './components/Default/Breadcrumb.vue';
 .app {
   width: 100vw;
   height: 100vh;
+  max-height: 100vh;
   padding: 1rem;
   margin: 0;
   display: flex;

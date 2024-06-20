@@ -56,13 +56,18 @@
 
 <script setup lang="ts">
 import { ref, watch, defineEmits } from "vue";
+import { useRouter } from 'vue-router'
+
 import Papa from "papaparse";
 import { v4 as uuidv4 } from 'uuid';
 import Moment from 'moment';
+
 import SelectFileButton from "./SelectFileButton.vue";
 import SelectAnotherFileButton from "./SelectAnotherFileButton.vue";
+
 import { type CsvFile } from "@/types/csv-file";
 
+const router = useRouter()
 const files = ref<CsvFile[]>([]);
 const uploadProgress = ref(0);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -223,7 +228,7 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
   let simulatedProgress = 0;
 
   const interval = setInterval(() => {
-    simulatedProgress += 2;
+    simulatedProgress += 5;
     uploadProgress.value = Math.min(simulatedProgress, 100);
 
     if (simulatedProgress >= 100) {
@@ -231,11 +236,12 @@ const simulateUploadProgress = (csvFile: CsvFile): void => {
       conversionStatus.value = "completed";
       clearInterval(interval);
       fileTypeState.value = "unknown";
+      router.push(`detail/${csvFile.id}`)
     } else if (fileTypeState.value === "invalid") {
       clearInterval(interval);
       resetUpload();
     }
-  }, 50);
+  }, 100);
 };
 </script>
 

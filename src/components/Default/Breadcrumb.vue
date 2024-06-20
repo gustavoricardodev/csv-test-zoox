@@ -73,7 +73,7 @@ watchEffect(() => {
 }
 
 .breadcrumb__item + .breadcrumb__item::before {
-  content: url(../assets/img/breadcrumb-arrow.svg);
+  content: url(../../assets/img/breadcrumb-arrow.svg);
   margin: 0 0.9375rem;
 }
 
