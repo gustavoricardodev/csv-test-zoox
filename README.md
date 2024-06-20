@@ -69,6 +69,8 @@ Siga os passos abaixo para configurar e rodar o projeto localmente:
 │   └── index.html
 ├── src
 │   ├── assets
+│   ├── filesToTest
+│   ├── assets
 │   ├── components
 │   ├── router
 │   ├── types
