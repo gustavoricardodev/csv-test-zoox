@@ -55,6 +55,11 @@ const toggleRowSelection = (index: number) => {
   selectedRows.value[index] = !selectedRows.value[index];
 };
 
+const hasSelectedRows = computed(() => {
+  console.log(Object.values(selectedRows.value).filter((e) => e));
+  return Object.values(selectedRows.value).filter((e) => e).length;
+});
+
 const openConfirmExportModal = () => {
   confirmExportModalVisible.value = true;
 };
@@ -139,7 +144,9 @@ const headers = computed(() => {
     </transition>
 
     <div class="detail__top">
-      <ColumnsButton @columnsButtonClick="toggleColumnsToggleModal" />
+      <ColumnsButton
+        @columnsButtonClick="toggleColumnsToggleModal"
+      />
       <transition name="fade">
         <ColumnsToggleModal
           :headers="headers"
@@ -152,7 +159,10 @@ const headers = computed(() => {
       </transition>
 
       <div class="detail__top-button-wrapper">
-        <ExportButton @exportButtonClick="openConfirmExportModal" />
+        <ExportButton
+          @exportButtonClick="openConfirmExportModal"
+          :disabled="!hasSelectedRows"
+        />
         <BackButton @backButtonClick="handleBackButtonClick" />
       </div>
     </div>
@@ -238,6 +248,11 @@ const headers = computed(() => {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.detail__top .detail__top-button-wrapper button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .detail__table {
