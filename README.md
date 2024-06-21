@@ -61,7 +61,7 @@ Siga os passos abaixo para configurar e rodar o projeto localmente:
 
 4. **Abra o navegador:**
 
-    Normalmente, o Vite iniciará o projeto no endereço http://localhost:3000. Abra seu navegador e navegue para esse endereço.
+    Normalmente, o Vite iniciará o projeto no endereço http://localhost:3000 ou http://localhost:5173/. Caso não for nenhum desses endereços, siga o indicado no seu terminal.
 
 ## 📁 Estrutura do Projeto
 ```
