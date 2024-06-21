@@ -1,37 +1,42 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import ExportButton from "../components/DetailView/ExportButton.vue";
 import BackButton from "../components/DetailView/BackButton.vue";
 import ColumnsButton from "../components/DetailView/ColumnsButton.vue";
+import ColumnsToggleModal from "../components/DetailView/ColumnsToggleModal.vue";
 import ConfirmExportModal from "../components/DetailView/ConfirmExportModal.vue";
-import { type CsvFile } from "@/types/csv-file";
+import ExportButton from "../components/DetailView/ExportButton.vue";
+import { type CsvFile } from "../types/csv-file";
 
 const parsedUploadedFiles = ref<CsvFile[]>([]);
 const file = ref<CsvFile | null>(null);
 const confirmExportModalVisible = ref(false);
+const columnsToggleModalVisible = ref(false);
 const isLoading = ref(true);
 const selectedRows = ref<Record<number, boolean>>({});
+const visibleColumns = ref<boolean[]>([]);
+
 const router = useRouter();
 const route = useRoute();
 
 const loadUploadedFiles = () => {
-  // fake backend request
   setTimeout(() => {
     const uploadedFiles = localStorage.getItem("uploadedFiles");
     if (uploadedFiles) {
       parsedUploadedFiles.value = JSON.parse(uploadedFiles);
-      const csvID = route.params.id;
+      const csvID = route.params.id as string;
       file.value =
         parsedUploadedFiles.value.find((file) => file.id === csvID) || null;
+
+      if (file.value) {
+        visibleColumns.value = Array(file.value.columnCount).fill(true);
+      }
     }
     isLoading.value = false;
   }, 1000);
 };
 
-onMounted(() => {
-  loadUploadedFiles();
-});
+onMounted(loadUploadedFiles);
 
 const saveUploadedFiles = () => {
   localStorage.setItem(
@@ -42,6 +47,10 @@ const saveUploadedFiles = () => {
 
 watch(parsedUploadedFiles, saveUploadedFiles, { deep: true });
 
+const isAllColumnsHidden = computed(() => {
+  return visibleColumns.value.every((e) => e === false);
+});
+
 const toggleRowSelection = (index: number) => {
   selectedRows.value[index] = !selectedRows.value[index];
 };
@@ -50,15 +59,29 @@ const openConfirmExportModal = () => {
   confirmExportModalVisible.value = true;
 };
 
+const toggleColumnsToggleModal = () => {
+  columnsToggleModalVisible.value = !columnsToggleModalVisible.value;
+};
+
 const exportFile = () => {
   if (!file.value) return;
 
-  const selectedData = file.value.data.filter(
-    (_, index) => selectedRows.value[index]
+  const header = file.value.data[0];
+  const visibleHeader = Object.values(header).filter(
+    (_, index) => visibleColumns.value[index]
   );
+
+  const selectedData = file.value.data
+    .slice(1)
+    .filter((_, index) => selectedRows.value[index]);
+
   if (selectedData.length > 0) {
-    const exportedRows = selectedData.length;
-    const exportedColumns = Object.keys(selectedData[0]).length;
+    const visibleData = selectedData.map((row) =>
+      Object.values(row).filter((_, index) => visibleColumns.value[index])
+    );
+
+    const exportedRows = visibleData.length;
+    const exportedColumns = visibleHeader.length;
 
     file.value.exportedRows = exportedRows;
     file.value.exportedColumns = exportedColumns;
@@ -71,9 +94,10 @@ const exportFile = () => {
       parsedUploadedFiles.value[fileIndex] = file.value;
     }
 
-    const csvContent = selectedData
-      .map((row) => Object.values(row).join(","))
-      .join("\n");
+    const csvContent = [
+      visibleHeader.join(","),
+      ...visibleData.map((row) => row.join(",")),
+    ].join("\n");
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -86,9 +110,23 @@ const handleBackButtonClick = () => {
   router.push("/");
 };
 
-const handleColumnsButtonClick = () => {
-  window.alert("Este recurso não ficou disponível a tempo 🤦‍♂️");
+const toggleColumnVisibility = (index: number) => {
+  visibleColumns.value[index] = !visibleColumns.value[index];
 };
+
+const showAllColumns = () => {
+  visibleColumns.value.fill(true);
+  toggleColumnsToggleModal();
+};
+
+const hideAllColumns = () => {
+  visibleColumns.value.fill(false);
+  toggleColumnsToggleModal();
+};
+
+const headers = computed(() => {
+  return file.value ? Object.values(file.value.data[0]).map(String) : [];
+});
 </script>
 
 <template>
@@ -101,8 +139,19 @@ const handleColumnsButtonClick = () => {
     </transition>
 
     <div class="detail__top">
-      <ColumnsButton @columnsButtonClick="handleColumnsButtonClick" />
-      <div>
+      <ColumnsButton @columnsButtonClick="toggleColumnsToggleModal" />
+      <transition name="fade">
+        <ColumnsToggleModal
+          :headers="headers"
+          :visibleColumns="visibleColumns"
+          @toggleColumn="toggleColumnVisibility"
+          @showAllColumns="showAllColumns"
+          @hideAllColumns="hideAllColumns"
+          v-model:modelValue="columnsToggleModalVisible"
+        />
+      </transition>
+
+      <div class="detail__top-button-wrapper">
         <ExportButton @exportButtonClick="openConfirmExportModal" />
         <BackButton @backButtonClick="handleBackButtonClick" />
       </div>
@@ -116,6 +165,18 @@ const handleColumnsButtonClick = () => {
             fake loading...
           </div>
         </template>
+        <template v-else-if="isAllColumnsHidden">
+          <div class="detail__empty">
+            <img
+              src="../assets/img/table-icon.svg"
+              width="96"
+              height="75"
+              alt="Imagem de uma tabela"
+              title="Imagem de uma tabela"
+            />
+            <p>Selecione ao menos uma coluna...</p>
+          </div>
+        </template>
         <template v-else>
           <div class="detail__table">
             <div class="detail__table-row detail__table-header">
@@ -124,6 +185,7 @@ const handleColumnsButtonClick = () => {
                 class="detail__table-cell"
                 v-for="(header, index) in file?.data[0]"
                 :key="'header-' + index"
+                v-show="visibleColumns[parseInt(index)]"
               >
                 {{ header }}
               </div>
@@ -142,6 +204,7 @@ const handleColumnsButtonClick = () => {
                 class="detail__table-cell"
                 v-for="(item, itemIndex) in row"
                 :key="'item-' + itemIndex"
+                v-show="visibleColumns[parseInt(itemIndex)]"
               >
                 {{ item }}
               </div>
@@ -167,9 +230,11 @@ const handleColumnsButtonClick = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 2;
 }
 
-.detail__top div {
+.detail__top .detail__top-button-wrapper {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -278,6 +343,21 @@ const handleColumnsButtonClick = () => {
   position: absolute;
   top: 2px;
   left: 6px;
+}
+
+.detail__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 100%;
+}
+
+.detail__empty p {
+  font-weight: 700;
+  color: var(--black-color);
+  font-size: 1rem;
 }
 
 .listing__loader {
