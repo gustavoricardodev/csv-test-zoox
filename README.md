@@ -16,10 +16,10 @@ Este projeto permite aos usuários importar arquivos CSV, visualizar e seleciona
 
 Para rodar este projeto, você precisará ter os seguintes softwares instalados em seu ambiente:
 
-- Node.js (versão 16 ou superior)
+- Node.js (versão 20 ou superior)
 - npm (versão 7 ou superior) ou yarn (versão 1.22 ou superior)
 
-## Instalação
+## 💻 Instalação
 
 Siga os passos abaixo para configurar e rodar o projeto localmente:
 
